@@ -1,12 +1,13 @@
-import jwt from 'jsonwebtoken';
-import { JWT_EXPIRES_IN, JWT_SECRET } from '../config/jwt.js';
+import request from 'supertest';
 
-export function gerarToken(usuario) {
-  return jwt.sign({ sub: usuario.id, role: usuario.role, nome: usuario.nome }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
-  });
-}
+export async function getToken(emailUser, passUser) {
+    const loginResposta = await request('http://localhost:3000')
+        .post('/api/auth/login')
+        .set('Content-Type', 'application/json')
+        .send({ 
+            email: emailUser, 
+            senha: passUser
+        });
 
-export function validarToken(token) {
-  return jwt.verify(token, JWT_SECRET);
+    return loginResposta.body.token;
 }

@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { expect } from 'chai';
+import 'dotenv/config'
 
 describe('Matrícula de Aluno em Disciplina', () => {
     // ANTES DE RODAR ESSE IT:
@@ -9,17 +10,17 @@ describe('Matrícula de Aluno em Disciplina', () => {
     it.only('Validar que um aluno que acaba de ser cadastrado pode ser matriculado em uma nova disciplina', async () => {
         // Arrange (Given/Dado que/Preparar)
         // Fazer login, Cadastrar o aluno e cadastrar a disciplina
-        const loginResposta = await request('http://localhost:3000')
+        const loginResposta = await request(process.env.BASE_URL)
             .post('/api/auth/login')
             .set('Content-Type', 'application/json')
             .send({ 
-                email: 'admin@escola.com', 
-                senha: 'admin123'
+                email:process.env.ADMIN_EMAIL, 
+                senha:process.env.ADMIN_SENHA
             });
                 
         const tokenAdmin = loginResposta.body.token;
 
-        const cadastroAlunoResposta = await request('http://localhost:3000')
+        const cadastroAlunoResposta = await request(process.env.BASE_URL)
             .post('/api/admin/alunos')
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${tokenAdmin}`)
@@ -32,7 +33,7 @@ describe('Matrícula de Aluno em Disciplina', () => {
                 
         const alunoId = cadastroAlunoResposta.body.id;
         
-        const cadastroDisciplinaResposta = await request('http://localhost:3000')
+        const cadastroDisciplinaResposta = await request(process.env.BASE_URL)
             .post('/api/admin/disciplinas')
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${tokenAdmin}`)
@@ -46,7 +47,7 @@ describe('Matrícula de Aluno em Disciplina', () => {
 
         // Act (When/Quando/Agir/Executar)
         // Matricular o aluno
-        const cadastroMatriculaResposta = await request('http://localhost:3000')
+        const cadastroMatriculaResposta = await request(process.env.BASE_URL)
             .post(`/api/admin/disciplinas/${disciplinaId}/matriculas`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${tokenAdmin}`)
