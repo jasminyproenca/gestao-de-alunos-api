@@ -1,6 +1,5 @@
-import jwt from 'jsonwebtoken';
 import ApiError from '../utils/ApiError.js';
-import { JWT_SECRET } from '../config/jwt.js';
+import { validarToken } from '../helpers/auth.js';
 
 function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -11,7 +10,7 @@ function authenticate(req, res, next) {
   const token = authHeader.slice('Bearer '.length).trim();
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = validarToken(token);
     req.user = { id: payload.sub, role: payload.role, nome: payload.nome };
     next();
   } catch (err) {

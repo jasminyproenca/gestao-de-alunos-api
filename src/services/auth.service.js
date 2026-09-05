@@ -1,14 +1,7 @@
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import db from '../database/db.js';
 import ApiError from '../utils/ApiError.js';
-import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/jwt.js';
-
-function gerarToken(usuario) {
-  return jwt.sign({ sub: usuario.id, role: usuario.role, nome: usuario.nome }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
-  });
-}
+import { gerarToken } from '../helpers/auth.js';
 
 export function login({ email, senha }) {
   if (!email || !senha) {
