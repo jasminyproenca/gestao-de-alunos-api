@@ -1,6 +1,9 @@
-import request from 'supertest';
+import { api } from '../../src/helpers/api';
 import { expect } from 'chai';
-import 'dotenv/config'
+import { comTokenDeAdmin } from '../../src/helpers/auth';
+import { novoAluno } from '../factories/alunosFactores';
+import { novaDisciplina } from '../factories/disciplinasFactores';
+
 
 describe('Matrícula de Aluno em Disciplina', () => {
     // ANTES DE RODAR ESSE IT:
@@ -9,48 +12,29 @@ describe('Matrícula de Aluno em Disciplina', () => {
     // - Não ter uma disciplina com o código PC1004
     it.only('Validar que um aluno que acaba de ser cadastrado pode ser matriculado em uma nova disciplina', async () => {
         // Arrange (Given/Dado que/Preparar)
-        // Fazer login, Cadastrar o aluno e cadastrar a disciplina
-        const loginResposta = await request(process.env.BASE_URL)
-            .post('/api/auth/login')
-            .set('Content-Type', 'application/json')
-            .send({ 
-                email:process.env.ADMIN_EMAIL, 
-                senha:process.env.ADMIN_SENHA
-            });
-                
-        const tokenAdmin = loginResposta.body.token;
-
-        const cadastroAlunoResposta = await request(process.env.BASE_URL)
+        // Cadastrar o aluno e cadastrar a disciplina
+        const cadastroAlunoResposta = await api()
             .post('/api/admin/alunos')
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${tokenAdmin}`)
-            .send({
-                nome: 'Ana Souza',
-                email: 'ana.souza.1004@example.com',
-                matricula: '202401004',
-                senha: '123456'
-            });
+            .set('Authorization', await comTokenDeAdmin())
+            .send({novoAluno});
                 
         const alunoId = cadastroAlunoResposta.body.id;
         
-        const cadastroDisciplinaResposta = await request(process.env.BASE_URL)
+        const cadastroDisciplinaResposta = await api()
             .post('/api/admin/disciplinas')
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${tokenAdmin}`)
-            .send({
-                nome: 'Pensamento Computacional',
-                codigo: 'PC1004',
-                cargaHoraria: 60
-            });
+            .set('Authorization', await comTokenDeAdmin())
+            .send({novaDisciplina});
                 
         const disciplinaId = cadastroDisciplinaResposta.body.id;
 
         // Act (When/Quando/Agir/Executar)
         // Matricular o aluno
-        const cadastroMatriculaResposta = await request(process.env.BASE_URL)
+        const cadastroMatriculaResposta = await api()
             .post(`/api/admin/disciplinas/${disciplinaId}/matriculas`)
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${tokenAdmin}`)
+            .set('Authorization', await comTokenDeAdmin())
             .send({
                 alunoId: alunoId
             });
