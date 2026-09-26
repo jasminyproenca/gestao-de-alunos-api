@@ -1,0 +1,24 @@
+{
+  "testesDeEntregas": [
+    {
+      "testTitle": "CT01: Deve registrar entrega de trabalho com sucesso quando os dados sao validos",
+      "dadosAluno": {
+        "nome": "João DDT",
+        "email": "joao.ddt@example.com",
+        "matricula": "2026-0004",
+        "senha": "senhaforte"
+      },
+      "dadosDisciplina": {
+        "nome": "Matemática",
+        "codigo": "MAT01",
+        "cargaHoraria": 60,
+        "professor": "Prof. Carlos"
+      },
+      "dadosTrabalho": {
+        "titulo": "Trabalho de Equações",
+        "descricao": "Resolver lista 1"
+      },
+      "statusCodeEsperado": 201
+    }
+  ]
+}

@@ -2,7 +2,7 @@ import request from 'supertest';
 import { expect } from 'chai';
 import app from '../../src/app.js';
 
-describe('Testes de Login External', () => {
+describe('[External]-Testes de Login External', () => {
     it('CT01: Deve retornar 200 e um token para credenciais válidas', async () => {
         const response = await request(app)
             .post('/api/auth/login')

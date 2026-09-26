@@ -1,23 +1,21 @@
-import { api } from '../../src/helpers/api';
+import { api } from '../../src/helpers/api.js';
 import { expect } from 'chai';
-import { comTokenDeAdmin } from '../../src/helpers/auth';
-import { novoAluno } from '../factories/alunosFactores';
-import { novaDisciplina } from '../factories/disciplinasFactores';
+import { comTokenDeAdmin } from '../../src/helpers/auth.js';
+import { novoAluno } from '../factories/alunosFactores.js';
+import { novaDisciplina } from '../factories/disciplinasFactores.js';
+import testesDeMatriculas from '../fixtures/matriculas.json' with { type: 'json' };
 
+describe('[External]-Matrícula de Aluno em Disciplina', () => {
+    testesDeMatriculas.forEach(testeDeMatricula => {
 
-describe('Matrícula de Aluno em Disciplina', () => {
-    // ANTES DE RODAR ESSE IT:
-    // - Tenha o email admin@escola.com e a senha admin123 cadastrados no banco
-    // - Não ter no banco de dados uma aluna com email ana.souza.1004@example.com e a matricula 202401004
-    // - Não ter uma disciplina com o código PC1004
-    it.only('Validar que um aluno que acaba de ser cadastrado pode ser matriculado em uma nova disciplina', async () => {
+    it(testeDeMatricula.testTitle, async () => {
         // Arrange (Given/Dado que/Preparar)
         // Cadastrar o aluno e cadastrar a disciplina
         const cadastroAlunoResposta = await api()
             .post('/api/admin/alunos')
             .set('Content-Type', 'application/json')
             .set('Authorization', await comTokenDeAdmin())
-            .send({novoAluno});
+            .send(testeDeMatricula.dadosAluno);
                 
         const alunoId = cadastroAlunoResposta.body.id;
         
@@ -25,7 +23,7 @@ describe('Matrícula de Aluno em Disciplina', () => {
             .post('/api/admin/disciplinas')
             .set('Content-Type', 'application/json')
             .set('Authorization', await comTokenDeAdmin())
-            .send({novaDisciplina});
+            .send(novaDisciplina());
                 
         const disciplinaId = cadastroDisciplinaResposta.body.id;
 
@@ -41,8 +39,9 @@ describe('Matrícula de Aluno em Disciplina', () => {
 
         // Assert (Then/Então/Validar)
         // Validar que o aluno de fato foi matriculado na disciplina
-        expect(cadastroMatriculaResposta.status).to.equal(201);
+        expect(cadastroMatriculaResposta.status).to.equal(testeDeMatricula.statusCodeEsperado);
         expect(cadastroMatriculaResposta.body.alunoId).to.equal(alunoId);
         expect(cadastroMatriculaResposta.body.disciplinaId).to.equal(disciplinaId);
-    })
+        })
+    });
 });
