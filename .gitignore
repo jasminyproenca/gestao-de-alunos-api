@@ -2,6 +2,7 @@ node_modules/
 npm-debug.log*
 .env
 .DS_Store
+reports/
 
 # stryker temp files
 .stryker-tmp

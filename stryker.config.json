@@ -9,5 +9,8 @@
   ],
   "testRunner": "mocha",
   "testRunner_comment": "Take a look at https://stryker-mutator.io/docs/stryker-js/mocha-runner for information about the mocha plugin.",
-  "coverageAnalysis": "perTest"
+  "coverageAnalysis": "perTest",
+  "mochaOptions": {
+    "spec": [ "test/**/*.test.js" ]
+  }
 }
