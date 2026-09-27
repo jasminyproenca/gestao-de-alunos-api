@@ -62,6 +62,7 @@ src/
   database/
     db.js                 # banco de dados em memória (coleções + operações CRUD genéricas)
     seed.js                # dados fake carregados na inicialização (inclui o admin)
+  helpers/                # funções auxiliares, incluindo utilitários de autenticação para testes
   middlewares/
     authenticate.js        # valida o JWT e popula req.user
     authorize.js            # restringe uma rota a um ou mais papéis (ex.: "admin")
@@ -83,15 +84,38 @@ Pré-requisito: Node.js 18+ (usa `crypto.randomUUID`, disponível nativamente).
 # instalar dependências
 npm install
 
+# configurar variáveis de ambiente (necessário para rodar testes)
+cp .env.example .env
+
 # subir em modo produção
 npm start
 
 # subir em modo desenvolvimento (reinício automático com nodemon)
 npm run dev
+
+# rodar a suíte de testes automatizados (Mocha/Chai/Supertest)
+npm test
+
+# rodar os testes de mutação (Stryker)
+npm run stryker
 ```
 
 O servidor sobe por padrão em `http://localhost:3000` (pode ser alterado com a variável de
 ambiente `PORT`).
+
+## Testes e Mutação (Stryker)
+
+Este projeto conta com testes automatizados utilizando Mocha, Chai e Supertest, e inclui uma suíte de **Testes de Mutação** configurada com o [Stryker](https://stryker-mutator.io/).
+
+Os testes de mutação servem para avaliar a qualidade e a eficácia dos testes escritos. O Stryker introduz falhas ("mutações") intencionais no código-fonte da aplicação e verifica se os testes existentes são capazes de identificar o erro ("matar o mutante"). Se uma mutação sobrevive, significa que falta um cenário de teste para cobrir aquele comportamento.
+
+Para rodar os testes de mutação:
+
+```bash
+npm run stryker
+```
+
+Ao final da execução, um relatório detalhado será gerado no terminal e também em formato HTML. O relatório HTML (salvo na pasta `reports/mutation/html/index.html` gerada após a execução) permite que você navegue linha por linha pelo seu código para ver exatamente quais mutações sobreviveram.
 
 ## Documentação da API (Swagger)
 
